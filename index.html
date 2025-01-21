@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown to Atwiki Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .output {
+            white-space: pre-wrap;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Markdown to Atwiki Conversion Tool</h1>
+    <p>以下のMarkdownテキストをアットウィキ記法に変換します:</p>
+    <textarea id="markdownInput" rows="10" style="width:100%;"></textarea>
+    <button onclick="convertMarkdown()">変換する</button>
+
+    <h2>変換結果:</h2>
+    <div class="output" id="atwikiOutput"></div>
+
+    <script>
+        function convertMarkdown() {
+            const markdown = document.getElementById('markdownInput').value;
+            let atwiki = markdown
+                // 見出しの変換
+                .replace(/^######\s*(.+)$/gm, '*****$1')
+                .replace(/^#####\s*(.+)$/gm, '****$1')
+                .replace(/^####\s*(.+)$/gm, '***$1')
+                .replace(/^###\s*(.+)$/gm, '**$1')
+                .replace(/^##\s*(.+)$/gm, '*$1')
+                // テーブル構文の変換
+                .replace(/^\|(.+)\|$/gm, '|$1|')
+                .replace(/\n/g, '&br')
+                // 引用の変換
+                .replace(/^>\s*(.+)$/gm, '>$1')
+                // 水平線の変換
+                .replace(/^---+$/gm, '----')
+                // 整形済みテキストの変換
+                .replace(/^    (.+)$/gm, ' $1')
+                // 定義リストの変換
+                .replace(/^:([^\|]+)\|(.+)$/gm, ':[ $1]|$2')
+                // 番号なしリストの変換
+                .replace(/^\-\-\-(.+)$/gm, '---$1')
+                .replace(/^\-\-(.+)$/gm, '--$1')
+                .replace(/^\-(.+)$/gm, '-$1')
+                // 番号付きリストの変換
+                .replace(/^\+\+\+(.+)$/gm, '+++$1')
+                .replace(/^\+\+(.+)$/gm, '++$1')
+                .replace(/^\+(.+)$/gm, '+$1')
+                // リンク構文の変換
+                .replace(/\[(.+?)\]\((.+?)\)/g, '[[$1>$2]]')
+                // コメントアウト
+                .replace(/^\/\/\s*(.+)$/gm, '//$1')
+                // 文字修飾
+                .replace(/\*\*(.+?)\*\*/g, "''$1''")
+                .replace(/\*(.+?)\*/g, "'''$1''')")
+                .replace(/~~(.+?)~~/g, '%%$1%%')
+                .replace(/<u>(.+?)<\/u>/g, '&u{$1}')
+                .replace(/<sub>(.+?)<\/sub>/g, '&sub{$1}')
+                .replace(/<sup>(.+?)<\/sup>/g, '&sup{$1}');
+
+            document.getElementById('atwikiOutput').textContent = atwiki;
+        }
+    </script>
+</body>
+</html>
